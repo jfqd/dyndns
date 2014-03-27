@@ -6,8 +6,8 @@ You should have an existing PowerDNS MySQL-Database to use this app. Maybe addit
 
 ## Installation
 
-git clone
-cd into/directory
+git clone https://github.com/jfqd/dyndns.git
+cd dyndns
 bundle
 
 ## Hosting
