@@ -1,0 +1,6 @@
+.DS_Store
+Capfile
+config/deploy.rb
+config/database.yml
+Gemfile.lock
+.rvmrc
