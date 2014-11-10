@@ -8,7 +8,14 @@ domain_regex = /(^$)|(^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?\
 YAML::load(File.open('config/database.yml'))['production'].symbolize_keys.each do |key, value|
   set key, value
 end
- 
+
+configure do
+  # http://recipes.sinatrarb.com/p/middleware/rack_commonlogger
+  file = File.new("#{settings.root}/log/#{settings.environment}.log", 'a+')
+  file.sync = true
+  use Rack::CommonLogger, file
+end
+
 ActiveRecord::Base.establish_connection(
   adapter: "mysql2",
   host:     settings.db_host,
@@ -48,9 +55,13 @@ get '/update/:token/:domain' do
     r = Record.find_by_name(params[:domain])
     halt 403 if r.nil? || r.user_id != u.id # authorized for this domain?
     r.content = request.ip
-    halt 400 if !r.save # updated?
+    if !r.save # updated?
+      logger.warn "[DynDNS#get] Error: halt on save"
+      halt 400
+    end
     status 200
   rescue Exception => e
+    logger.warn "[DynDNS#get] Rescue: #{e.message}"
     halt 400
   end
 end
