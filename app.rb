@@ -2,11 +2,15 @@
 require 'rubygems'
 require 'sinatra'
 require 'active_record'
+require 'yaml'
+require 'dotenv/load'
+require 'erb'
 
 domain_regex = /(^$)|(^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(([0-9]{1,5})?\/.*)?$)/ix
 
 YAML::load(File.open('config/database.yml'))['production'].symbolize_keys.each do |key, value|
-  set key, value
+  renderer = ERB.new(value)
+  set key, renderer.result()
 end
 
 configure do
@@ -17,11 +21,11 @@ configure do
 end
 
 ActiveRecord::Base.establish_connection(
-  adapter: "mysql2",
-  host:     settings.db_host,
-  database: settings.db_name,
-  username: settings.db_username,
-  password: settings.db_password
+  adapter:  settings.adapter,
+  host:     settings.host,
+  database: settings.database,
+  username: settings.username,
+  password: settings.password
 )
 
 class AuthToken < ActiveRecord::Base
@@ -57,12 +61,12 @@ get '/update/:token/:domain' do
     halt 403 if r.nil? || r.user_id != u.id # authorized for this domain?
     r.content = request.ip
     if !r.save # updated?
-      logger.warn "[DynDNS#get] Error: halt on save"
+      logger.warn "[DynDNS#update] Error: halt on save"
       halt 400
     end
     status 200
   rescue Exception => e
-    logger.warn "[DynDNS#get] Rescue: #{e.message}"
+    logger.warn "[DynDNS#update] Rescue: #{e.message}"
     halt 400
   end
 end
