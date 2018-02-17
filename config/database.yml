@@ -1,3 +1,4 @@
+---
 production:
   adapter: mysql2
   host: <%= ENV['DB_HOST'] %>
