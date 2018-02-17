@@ -50,7 +50,7 @@ end
 
 get '/update/:token/:domain' do
   begin
-    ActiveRecord::Base.verify_active_connections!
+    ActiveRecord::Base.clear_active_connections!
     halt 403 if params[:token].blank? || params[:domain].blank?
     halt 403 if !params[:domain].match(domain_regex)
     t = AuthToken.find_by_token(params[:token])
