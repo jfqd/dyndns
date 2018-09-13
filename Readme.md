@@ -6,15 +6,18 @@ You should have an existing PowerDNS MySQL-Database to use this app. Maybe addit
 
 ## Installation
 
+```
 git clone https://github.com/jfqd/dyndns.git
 cd dyndns
 bundle
-mkdir log
+```
 
 ## Hosting
 
 We use Phusion Passenger, but you can use thin, puma, unicorn or any other rack server as well. For testing just use:
 
+```
 rackup
+```
 
 Copyright (c) 2014 Stefan Husch, qutic development.
