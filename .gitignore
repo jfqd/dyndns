@@ -1,7 +1,7 @@
 .DS_Store
 Capfile
 config/deploy.rb
-Gemfile.lock
+#Gemfile.lock
 .rvmrc
 .env*
 doc
