@@ -71,6 +71,10 @@ get '/update/:token/:domain' do
   end
 end
 
+get "/robots.txt" do
+  %{User-agent: *\nDisallow: /}
+end
+
 get "/*" do
   halt 403
 end
