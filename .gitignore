@@ -4,4 +4,6 @@ config/deploy.rb
 #Gemfile.lock
 .rvmrc
 .env*
+.rbenv-gemsets
+.ruby-version
 doc
