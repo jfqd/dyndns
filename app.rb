@@ -75,6 +75,10 @@ get "/robots.txt" do
   %{User-agent: *\nDisallow: /}
 end
 
+get '/ping' do
+  'pong'
+end
+
 get "/*" do
   halt 403
 end
