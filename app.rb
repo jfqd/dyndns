@@ -3,6 +3,7 @@ require 'rubygems'
 require 'sinatra'
 require 'active_record'
 require 'yaml'
+require 'ipaddr'
 require 'dotenv/load'
 require 'erb'
 
@@ -57,7 +58,8 @@ get '/update/:token/:domain' do
     halt 403 if t.nil? # authorized user?
     u = User.find(t.user_id)
     halt 403 if u.nil? || u.state != 'active' # active user?
-    r = Record.find_by_name(params[:domain])
+    rt = IPAddr.new(request.ip).ipv6? ? "AAAA" : "A"
+    r = Record.find_by_name_and_type(params[:domain],rt)
     halt 403 if r.nil? || r.user_id != u.id # authorized for this domain?
     r.content = request.ip
     if !r.save # updated?
